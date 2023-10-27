@@ -230,7 +230,7 @@ Exec=/usr/local/lib/arkenfox-auto-update" > /etc/pacman.d/hooks/arkenfox.hook
 }
 
 installffaddons(){
-	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies vim-vixen"
+	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies vim-vixen canvasblocker dont-accept-webp image-search-options simple-translate tampermonkey xbs"
 	addontmp="$(mktemp -d)"
 	trap "rm -fr $addontmp" HUP INT QUIT TERM PWR EXIT
 	IFS=' '
