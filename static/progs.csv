@@ -115,3 +115,6 @@ A,spicetify-cli,"Themes for spotify."
 ,urlview,"view urls bro."
 A,python-yams,"yet another mpd scrobbler."
 A,sharenix-git,"upload to image hosting sites."
+,cronie,"cron."
+,cronie-runit,"cron service."
+
