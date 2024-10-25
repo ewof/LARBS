@@ -96,7 +96,7 @@ refreshkeys() {
 	*)
 		whiptail --infobox "Enabling Arch Repositories for more a more extensive software collection..." 7 40
 		pacman --noconfirm --needed -S \
-			artix-keyring artix-archlinux-support >/dev/null 2>&1
+			artix-keyring archlinx-keyring archlinux-mirrorlist >/dev/null 2>&1
 		for repo in extra community multilib; do
 			grep -q "^\[$repo\]" /etc/pacman.conf ||
 				echo "[$repo]
