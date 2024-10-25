@@ -121,7 +121,7 @@ manualinstall() {
 			sudo -u "$name" git pull --force origin master
 		}
 	cd "$repodir/$1" || exit 1
-	sudo -u "$name" -D "$repodir/$1" \
+	sudo -u "$name" \
 		makepkg --noconfirm -si >/dev/null 2>&1 || return 1
 }
 
@@ -289,7 +289,7 @@ preinstallmsg || error "User exited."
 refreshkeys ||
 	error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-for x in curl ca-certificates base-devel git ntp zsh; do
+for x in curl ca-certificates base-devel git ntp zsh dash; do
 	whiptail --title "LARBS Installation" \
 		--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
 	installpkg "$x"
@@ -330,9 +330,11 @@ installationloop
 # Install the dotfiles in the user's home directory, but remove .git dir and
 # other unnecessary files.
 putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
-[ -z "/home/$name/.config/newsboat/urls" ] &&
-	echo "$rssurls" > "/home/$name/.config/newsboat/urls"
 rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
+
+# Write urls for newsboat if it doesn't already exist
+[ -s "/home/$name/.config/newsboat/urls" ] ||
+	sudo -u "$name" echo "$rssurls" > "/home/$name/.config/newsboat/urls"
 
 # Install vim plugins if not alread present.
 [ ! -f "/home/$name/.config/nvim/autoload/plug.vim" ] && vimplugininstall
@@ -346,6 +348,9 @@ chsh -s /bin/zsh "$name" >/dev/null 2>&1
 sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
 sudo -u "$name" mkdir -p "/home/$name/.config/abook/"
 sudo -u "$name" mkdir -p "/home/$name/.config/mpd/playlists/"
+
+# Make dash the default #!/bin/sh symlink.
+ln -sfT /bin/dash /bin/sh >/dev/null 2>&1
 
 # dbus UUID must be generated for Artix runit.
 dbus-uuidgen >/var/lib/dbus/machine-id
