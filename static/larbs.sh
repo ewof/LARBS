@@ -232,7 +232,7 @@ Exec=/usr/local/lib/arkenfox-auto-update" > /etc/pacman.d/hooks/arkenfox.hook
 }
 
 installffaddons(){
-	addonlist="xbs simple-translate dont-accept-webp canvasblocker search-all-tabs duplicate-tabs-closer"
+	addonlist="xbs simple-translate dont-accept-webp canvasblocker search-all-tabs duplicate-tabs-closer bitwarden-password-manager"
 	addontmp="$(mktemp -d)"
 	trap "rm -fr $addontmp" HUP INT QUIT TERM PWR EXIT
 	IFS=' '
