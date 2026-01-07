@@ -263,6 +263,24 @@ finalize() {
 		--msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Luke" 13 80
 }
 
+install_papirus_nord() {
+    # Install papirus-folders from AUR
+    whiptail --title "LARBS Installation" \
+        --infobox "Installing papirus-folders from the AUR." 9 70
+    sudo -u "$name" $aurhelper -S --noconfirm papirus-folders >/dev/null 2>&1
+
+    tempdir=$(mktemp -d)
+    git clone https://github.com/Adapta-Projects/Papirus-Nord "$tempdir"
+    cd "$tempdir"
+
+    papirus-folders -C polarnight3 --theme Papirus-Dark
+    sudo ./install
+    sudo -u "$name" $aurhelper -Rns --noconfirm papirus-folders >/dev/null 2>&1
+
+    rm -rf "$tempdir"
+    cd -
+}
+
 ### THE ACTUAL SCRIPT ###
 
 ### This is how everything happens in an intuitive format and order.
@@ -326,6 +344,11 @@ $aurhelper -Y --save --devel
 # the user has been created and has priviledges to run sudo without a password
 # and all build dependencies are installed.
 installationloop
+
+install_papirus_nord
+
+sudo -u "$name" teamspeak3-install-addon https://addons-content.teamspeak.com/452f7a0e-3cf4-44ad-8e7d-89dfa73a9b06/files/6/dark_5ec13edeac4e3.ts3_style
+sudo -u "$name" teamspeak3-install-addon https://addons-content.teamspeak.com/e68cbad7-e24a-4504-8967-fe0286d09c32/files/4/dark_5cf2e10d08e3a.ts3_iconpack
 
 # Install the dotfiles in the user's home directory, but remove .git dir and
 # other unnecessary files.
