@@ -1,4 +1,5 @@
 #TAG,NAME IN REPO (or git url),PURPOSE (should be a verb phrase to sound right while installing)
+,linux-firmware,"this will probably already be installed but just in case"
 ,xorg-server,"is the graphical server. This first one may take a while as it pulls many other dependencies first on clean installs."
 ,xorg-xwininfo,"allows querying information about windows."
 ,xorg-xinit,"starts the graphical server."
@@ -87,6 +88,7 @@ A,teamspeak3-addon-installer,"addon installer"
 ,vulkan-radeon,"gpu stuff"
 ,libva-mesa-driver,"gpu stuff"
 ,libva-utils,"gpu stuff"
+,xf86-video-amdgpu,"gpu stuff"
 ,gperftools,"rocm stuff"
 ,rocm-hip-sdk,"rocm stuff"
 ,rocm-opencl-sdk,"rocm stuff"

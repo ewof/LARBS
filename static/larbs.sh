@@ -392,6 +392,14 @@ dbus-uuidgen >/var/lib/dbus/machine-id
 	Option "Tapping" "on"
 EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
+# Enable VRR (FreeSync)
+[ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "OutputClass"
+	Identifier "AMD" 
+	MatchDriver "amdgpu" 
+	Driver "amdgpu" 
+	Option "VariableRefresh" "true" 
+EndSection' >/etc/X11/xorg.conf.d/20-amdgpu.conf
+
 # All this below to get Librewolf installed with add-ons and non-bad settings.
 
 whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
