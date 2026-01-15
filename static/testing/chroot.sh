@@ -24,6 +24,7 @@ systemctl enable NetworkManager
 systemctl start NetworkManager
 ln -s /etc/runit/sv/NetworkManager /etc/runit/runsvdir/current
 ln -s /etc/runit/sv/ntpd /etc/runit/runsvdir/current
+ln -s /etc/runit/sv/cronie /etc/runit/runsvdir/current
 
 pacman --noconfirm --needed -S grub efibootmgr && grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB && grub-mkconfig -o /boot/grub/grub.cfg
 

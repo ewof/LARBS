@@ -365,6 +365,7 @@ rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/
 # Most important command! Get rid of the beep!
 rmmod pcspkr
 echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
+echo "options amdgpu ppfeaturemask=0xFFF7FFFF" >/etc/modprobe.d/99-amdgpu-overdrive.conf
 
 # Make zsh the default shell for the user.
 chsh -s /bin/zsh "$name" >/dev/null 2>&1
@@ -428,6 +429,54 @@ echo "kernel.dmesg_restrict = 0" > /etc/sysctl.d/dmesg.conf
 
 # Cleanup
 rm -f /etc/sudoers.d/larbs-temp
+
+# Add custom crontab entries
+whiptail --infobox "Adding custom crontab entries..." 7 60
+
+# For root (avoid duplicates by checking first)
+crontab -l 2>/dev/null | grep -q "@reboot ntpdate ntp.ubuntu.com" ||
+    (crontab -l 2>/dev/null; echo "@reboot ntpdate ntp.ubuntu.com") | crontab -
+crontab -l 2>/dev/null | grep -q "@reboot /usr/bin/lact daemon >/dev/null 2>&1 &" ||
+    (crontab -l 2>/dev/null; echo "@reboot /usr/bin/lact daemon >/dev/null 2>&1 &") | crontab -
+
+# For the user (avoid duplicates by checking first)
+sudo -u "$name" sh -c 'crontab -l 2>/dev/null | grep -q "*/1 * * * * /usr/bin/mailsync" ||
+    (crontab -l 2>/dev/null; echo "*/1 * * * * /usr/bin/mailsync") | crontab -'
+
+# Create /etc/lact/config.yml with dynamic GPU ID
+whiptail --infobox "Creating LACT config file..." 7 60
+gpu_id=$(/usr/bin/lact cli list | awk '/^0:/ {print $2}')
+mkdir -p /etc/lact
+cat <<EOF > /etc/lact/config.yml
+version: 5
+daemon:
+  log_level: info
+  admin_group: wheel
+  disable_clocks_cleanup: false
+apply_settings_timer: 5
+gpus:
+  "$gpu_id":
+    fan_control_enabled: false
+    fan_control_settings:
+      mode: static
+      static_speed: 0.3
+      temperature_key: edge
+      interval_ms: 500
+      curve:
+        40: 0.5
+        50: 0.7
+        60: 0.8
+        70: 0.85
+        80: 1.0
+      spindown_delay_ms: 5000
+      change_threshold: 2
+    pmfw_options:
+      target_temperature: 60
+      zero_rpm: true
+    performance_level: auto
+current_profile: null
+auto_switch_profiles: false
+EOF
 
 # Last message! Install complete!
 finalize
