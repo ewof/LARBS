@@ -419,6 +419,10 @@ pdir="$browserdir/$profile"
 # Kill the now unnecessary librewolf instance.
 pkill -u "$name" librewolf
 
+# Thunderbird: HorlogeSkynet user.js + rice overrides, if a profile already exists.
+[ -x "/home/$name/.local/bin/thunderbird-userjs-update" ] &&
+	sudo -u "$name" "/home/$name/.local/bin/thunderbird-userjs-update"
+
 # Allow wheel users to sudo with password and allow several system commands
 # (like `shutdown` to run without password).
 echo "%wheel ALL=(ALL:ALL) ALL" >/etc/sudoers.d/00-larbs-wheel-can-sudo
@@ -439,9 +443,10 @@ crontab -l 2>/dev/null | grep -q "@reboot ntpdate ntp.ubuntu.com" ||
 crontab -l 2>/dev/null | grep -q "@reboot /usr/bin/lact daemon >/dev/null 2>&1 &" ||
     (crontab -l 2>/dev/null; echo "@reboot /usr/bin/lact daemon >/dev/null 2>&1 &") | crontab -
 
+# mail sync just doesn't work and even pam-gnupg doesn't fix https://github.com/cruegge/pam-gnupg/issues/33
 # For the user (avoid duplicates by checking first)
-sudo -u "$name" sh -c 'crontab -l 2>/dev/null | grep -q "*/1 * * * * /usr/bin/mailsync" ||
-    (crontab -l 2>/dev/null; echo "*/1 * * * * /usr/bin/mailsync") | crontab -'
+#sudo -u "$name" sh -c 'crontab -l 2>/dev/null | grep -q "*/1 * * * * /usr/bin/mailsync" ||
+#    (crontab -l 2>/dev/null; echo "*/1 * * * * /usr/bin/mailsync") | crontab -'
 
 # Create /etc/lact/config.yml with dynamic GPU ID
 whiptail --infobox "Creating LACT config file..." 7 60
