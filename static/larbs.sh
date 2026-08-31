@@ -68,7 +68,7 @@ usercheck() {
 
 preinstallmsg() {
 	whiptail --title "Let's get this party started!" --yes-button "Let's go!" \
-		--no-button "No, nevermind!" \
+		--no-button "No, never mind!" \
 		--yesno "The rest of the installation will now be totally automated, so you can sit back and relax.\\n\\nIt will take some time, but when done, you can relax even more with your complete system.\\n\\nNow just press <Let's go!> and the system will begin installation!" 13 60 || {
 		clear
 		exit 1
@@ -94,7 +94,7 @@ refreshkeys() {
 		pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
 		;;
 	*)
-		whiptail --infobox "Enabling Arch Repositories for more a more extensive software collection..." 7 40
+		whiptail --infobox "Enabling Arch Repositories for a more extensive software collection..." 7 40
 		pacman --noconfirm --needed -S \
 			artix-keyring archlinx-keyring archlinux-mirrorlist >/dev/null 2>&1
 		for repo in extra community multilib; do
@@ -341,7 +341,7 @@ $aurhelper -Y --save --devel
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
-# the user has been created and has priviledges to run sudo without a password
+# the user has been created and has privileges to run sudo without a password
 # and all build dependencies are installed.
 installationloop
 
@@ -359,7 +359,7 @@ rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/
 [ -s "/home/$name/.config/newsboat/urls" ] ||
 	echo "$rssurls" | sudo -u "$name" tee "/home/$name/.config/newsboat/urls" >/dev/null
 
-# Install vim plugins if not alread present.
+# Install vim plugins if not already present.
 [ ! -f "/home/$name/.config/nvim/autoload/plug.vim" ] && vimplugininstall
 
 # Most important command! Get rid of the beep!
@@ -370,7 +370,7 @@ echo "options amdgpu ppfeaturemask=0xFFF7FFFF" >/etc/modprobe.d/99-amdgpu-overdr
 # Make zsh the default shell for the user.
 chsh -s /bin/zsh "$name" >/dev/null 2>&1
 sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
-sudo -u "$name" mkdir -p "/home/$name/.config/abook/"
+sudo -u "$name" mkdir -p "/home/$name/.local/share/abook/"
 sudo -u "$name" mkdir -p "/home/$name/.config/mpd/playlists/"
 
 # Make dash the default #!/bin/sh symlink.
