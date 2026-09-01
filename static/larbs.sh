@@ -263,6 +263,26 @@ finalize() {
 		--msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Luke" 13 80
 }
 
+install_nordic_theme() {
+    # AUR nordic-theme is pinned to GitHub releases last cut in 2022.
+    # Clone master and install the GTK theme into the user's themes dir.
+    whiptail --title "LARBS Installation" \
+        --infobox "Installing Nordic GTK theme from source." 9 70
+    dir="$repodir/Nordic"
+    sudo -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
+        --no-tags -q "https://github.com/EliverLara/Nordic.git" "$dir" ||
+        {
+            cd "$dir" || return 1
+            sudo -u "$name" git pull --force origin master
+        }
+    themedir="/home/$name/.themes/Nordic"
+    sudo -u "$name" rm -rf "$themedir"
+    sudo -u "$name" mkdir -p "$themedir"
+    for f in index.theme assets cinnamon gnome-shell gtk-2.0 gtk-3.0 gtk-4.0 metacity-1 xfwm4; do
+        sudo -u "$name" cp -a "$dir/$f" "$themedir/"
+    done
+}
+
 install_papirus_nord() {
     # Install papirus-folders from AUR
     whiptail --title "LARBS Installation" \
@@ -345,6 +365,7 @@ $aurhelper -Y --save --devel
 # and all build dependencies are installed.
 installationloop
 
+install_nordic_theme
 install_papirus_nord
 
 sudo -u "$name" teamspeak3-install-addon https://addons-content.teamspeak.com/452f7a0e-3cf4-44ad-8e7d-89dfa73a9b06/files/6/dark_5ec13edeac4e3.ts3_style

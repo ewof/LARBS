@@ -25,7 +25,6 @@
 ,ffmpeg,"can record and splice video and audio on the command line."
 ,ffmpegthumbnailer,"creates thumbnail previews of video files."
 ,gnome-keyring,"serves as the system keyring."
-A,nordic-theme,"gives the dark GTK theme used."
 A,papirus-icon-theme,"GTK icon theme."
 ,python-qdarkstyle,"provides a dark Qt theme."
 ,neovim,"a tidier vim with some useful features"
