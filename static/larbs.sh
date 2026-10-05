@@ -402,7 +402,16 @@ dbus-uuidgen >/var/lib/dbus/machine-id
 
 # Use system notifications for Brave on Artix
 # Only do it when systemd is not present
-[ "$(readlink -f /sbin/init)" != "/usr/lib/systemd/systemd" ] && echo "export \$(dbus-launch)" >/etc/profile.d/dbus.sh
+# A login shell inside tmux must not replace the session bus. A fresh bus has
+# no login keyring, so gh cannot see the saved GitHub token and git asks for a username.
+if [ "$(readlink -f /sbin/init)" != "/usr/lib/systemd/systemd" ]; then
+	cat >/etc/profile.d/dbus.sh <<'EOF'
+# Keep an existing session bus. Starting a new one hides the login keyring.
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+	eval "$(dbus-launch --sh-syntax)"
+fi
+EOF
+fi
 
 # Enable tap to click
 [ ! -f /etc/X11/xorg.conf.d/40-libinput.conf ] && printf 'Section "InputClass"
